@@ -46,7 +46,7 @@ def translate_single_image(input_path, output_path=None, config_path=None):
     # تنفيذ الأمر
     import subprocess
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8')
+        result = subprocess.run(cmd, capture_output=True)
         if result.returncode == 0:
             print(f"✅ تمت الترجمة بنجاح! الملف المحفوظ في: {output_path}")
             print(f"✅ Translation successful! File saved at: {output_path}")
@@ -54,7 +54,10 @@ def translate_single_image(input_path, output_path=None, config_path=None):
         else:
             print(f"❌ خطأ في الترجمة:")
             print(f"❌ Translation error:")
-            print(result.stderr)
+            # فك تشفير مخرجات الخطأ مع معالجة الأخطاء لتجنب مشاكل الترميز
+            # Decode stderr with error handling to avoid encoding issues
+            error_output = result.stderr.decode('utf-8', errors='replace')
+            print(error_output)
             return False
     except Exception as e:
         print(f"❌ خطأ في تنفيذ الأمر: {e}")
